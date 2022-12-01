@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import {readFile} from "../../main/helpers"
+import Cropper from 'react-easy-crop';
+import { readFile } from '../../main/helpers';
 
 export default function PhotoCrop() {
   const [imageSrc, setImageSRc] = useState(null);
   const [filename, setFilename] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files.length) {
       // we got a file...
       const file = e.target.files[0];
       setFilename(file.path);
-            // get the image data from the file...
-            const imageData: any = await readFile(file)
-            setImageSRc(imageData)
+      // get the image data from the file...
+      const imageData: any = await readFile(file);
+      setImageSRc(imageData);
     }
   };
 
@@ -19,13 +23,19 @@ export default function PhotoCrop() {
     return (
       <>
         <h1>Please choose a photo to crop</h1>
-        <input type="file" accept="image/*" onChange={handleFileChange}/>
+        <input type="file" accept="image/*" onChange={handleFileChange} />
       </>
     );
   }
   return (
     <>
-      <img src={imageSrc} alt="" />
+      <Cropper
+      image={imageSrc}
+      crop = {crop}
+      zoom = {zoom}
+      onCropChange={setCrop}
+      onZoomChange={setZoom}
+       />
     </>
   );
 }
