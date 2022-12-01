@@ -3,10 +3,19 @@ import Cropper from 'react-easy-crop';
 import { readFile } from '../../main/helpers';
 
 export default function PhotoCrop() {
-  const [imageSrc, setImageSRc] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
   const [filename, setFilename] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+
+  const handleSave = () => {
+    // first save the cropped image
+    // saveCroppedImage(filename, imageSrc, croppedAreaPixels);
+    // then reset for the next photo
+    setImageSrc(null);
+    setZoom(1);
+    setCrop({ x: 0, y: 0 });
+  };
 
   const handleFileChange = async (e: any) => {
     if (e.target.files && e.target.files.length) {
@@ -15,7 +24,7 @@ export default function PhotoCrop() {
       setFilename(file.path);
       // get the image data from the file...
       const imageData: any = await readFile(file);
-      setImageSRc(imageData);
+      setImageSrc(imageData);
     }
   };
 
@@ -30,12 +39,15 @@ export default function PhotoCrop() {
   return (
     <>
       <Cropper
-      image={imageSrc}
-      crop = {crop}
-      zoom = {zoom}
-      onCropChange={setCrop}
-      onZoomChange={setZoom}
-       />
+        image={imageSrc}
+        crop={crop}
+        zoom={zoom}
+        onCropChange={setCrop}
+        onZoomChange={setZoom}
+      />
+      <button onClick={handleSave} className="save-btn">
+        Save
+      </button>
     </>
   );
 }
